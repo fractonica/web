@@ -72,4 +72,4 @@ A few design details are not done yet; the guide lists them under "Not yet".
 
 ## Licence
 
-No licence has been chosen yet. All rights reserved; see [LICENSE](LICENSE).
+Licensed under the [Apache License 2.0](LICENSE).
