@@ -90,7 +90,7 @@ Homebrew `wasm-ld` on PATH is broken). `wasm/build.sh` finds them; `CLANG=` / `W
 
 ```
 web/
-  README.md  AGENTS.md  Makefile  package.json  .gitignore
+  README.md  AGENTS.md  Makefile  package.json  .gitignore     README.md is the short GitHub front page
   wasm/
     glue.c              the C side of the binding: scratch + keep memory, struct layout and constant tables
                         (generated from the header by the compiler), pointer forms of by-value functions,
@@ -184,7 +184,10 @@ web/
     crosscheck-lines.js the binding's side of the cross-check (mirror of native/dump.c)
     zone-probe.mjs      run by zones.test.js in a child process per time zone (TZ / LANG are fixed at start)
     native/dump.c       the native side: prints what the core answers, compiled with the host cc at test time
-  docs/screens/         curated final pictures (README.md shows them); refresh from build/shots after a visible change
+  docs/GUIDE.md         the long technical guide (formerly README.md): hosting, the app, the binding, the module,
+                        tests, layout, rules, not yet
+  docs/hero.jpg         README.md's picture (now-desktop-earth.png at 1400 px, JPEG)
+  docs/screens/         curated final pictures (docs/GUIDE.md shows them); refresh from build/shots after a visible change
   build/                everything built or captured (ignored by git)
 ```
 
