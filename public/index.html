@@ -1,0 +1,44 @@
+<!doctype html>
+<!--
+  Fractonica - the clock. A static page: no build step, no dependency.
+  app/main.js loads the core (fractonica.wasm through lib/fractonica.js) and
+  builds everything inside #app. Colours and fonts are NOT written here or in
+  styles/app.css: they are generated from app/design/tokens.js.
+  URL state: ?t=<unix s>&mode=pure|earth&screen=now|ladder|lens|wave&focus=0..13&level=0..62&theme=astrolabe|basalt
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <!--
+      Content-Security-Policy: only this site's own files; WebAssembly compiled from them ('wasm-unsafe-eval');
+      the one inline script below by its hash (test/app.test.js fails, printing the right hash, when that script
+      changes and the hash here does not); no style attribute or inline style; data: images for the favicon
+      main.js draws in the theme's colours; nothing may be framed in, posted or based elsewhere.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'sha256-IQaKmRUk8bscWnrPTEOqPWMYXRxTPMC5AEfNls+YRbI='; style-src 'self'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+    <!-- the plate (tokens.js color.plate; test/app.test.js holds it equal); app/main.js sets it per theme -->
+    <meta name="theme-color" content="#0b0e12" />
+    <title>Fractonica</title>
+    <!-- icons/ is written by tools/icons.mjs from the instrument's geometry; app/main.js swaps in the theme's own -->
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles/app.css" />
+    <link rel="stylesheet" href="styles/ladder.css" />
+    <link rel="stylesheet" href="styles/lens.css" />
+    <link rel="stylesheet" href="styles/wave.css" />
+    <link rel="modulepreload" href="lib/fractonica.js" />
+  </head>
+  <body>
+    <canvas id="ground" aria-hidden="true"></canvas>
+    <div id="app"></div>
+    <noscript>Fractonica is an instrument drawn by its own core; it needs JavaScript and WebAssembly.</noscript>
+    <script>
+      // browsers refuse module scripts on a page opened from the disk: say so instead of showing an empty plate
+      if (location.protocol === 'file:') document.getElementById('app').textContent = 'Fractonica runs from a web server: run "make serve" in the repository, or put this folder on any static host.';
+    </script>
+    <script type="module" src="app/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+# Everything that is built or captured goes below build/ (objects, the native
+# cross-check program, screenshots). public/fractonica.wasm is NOT ignored:
+# the built module is kept, so the site runs without a toolchain.
+build/
+
+# This project has no dependencies; if someone runs npm by habit, keep it out.
+node_modules/
+package-lock.json
+
+# Editors and the operating system
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*~

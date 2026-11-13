@@ -1,0 +1,642 @@
+/*
+ * ladder.css - the LADDER screen: where the cells of app/screens/ladder/ladder-rows.js stand.
+ *
+ * RULE (as in app.css): no colour and no font family here, only the custom
+ * properties generated from app/design/tokens.js.
+ *
+ * ladder.js places every row along the rim of the wheel: it gives each row
+ * element a vertical translation and `--rx`, the x of the rim at that row.
+ * Everything inside a row is positioned from `--rx` (left part) or from the
+ * right edge (values). A row is a strip as wide as the screen: 47 px tall at
+ * rest (.rung), 184 px under the index (.rung-focus); the numbers below are
+ * distances from the top of the strip, chosen so that the text BASELINES are
+ * those of DESIGN.md section 7 (hold them with tools/measure.mjs).
+ *
+ * Two arrangements of the values, set by ladder.js on .ladder:
+ *   [data-columns='stack']  phones, narrow windows: two lines at the right; EARTH replaces PURE there
+ *   [data-columns='side']   wide windows: five columns, pure and Earth side by side
+ * --inset is the top of the content (the phone keeps the corner marks above it).
+ */
+
+.ladder {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  /* right edges of the five value columns in the side arrangement, from the screen's right edge */
+  --c1: 630px;
+  --c2: 520px;
+  --c3: 380px;
+  --c4: 245px;
+  --c5: 110px;
+  /* the right edge of the values in the stack arrangement */
+  --edge: 51px;
+}
+
+/* PURE mode has no Earth columns: the two pure ones stand at a fixed distance after the rung names (about
+   330 px into the screen, the large row's caption included), so the eye does not cross an empty plate from a
+   name to its values on a wide window; on a narrow one they stay by the spine (no nearer than 245 / 110 px) */
+#app[data-mode='pure'] .ladder {
+  --c1: max(245px, calc(100% - 540px));
+  --c2: max(110px, calc(100% - 650px));
+}
+
+/*
+ * Phone: the design's last row and the foot of the spine stand in the air above the sigils
+ * (DESIGN.md section 7: spine to y 742, sigils at 784), below the screen's own box.
+ */
+#app[data-layout='phone'][data-screen='ladder'] #screen {
+  overflow: visible;
+}
+
+#app[data-layout='phone'] .ladder {
+  bottom: calc(var(--v) * -24);
+}
+
+/* in EARTH mode app.css draws the sigils' box 19.1 v higher (its marks stay where they are) */
+#app[data-layout='phone'][data-mode='earth'] .ladder {
+  bottom: calc(var(--v) * -4.9);
+}
+
+.ladder-canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+.ladder-head {
+  position: absolute;
+  left: 20px;
+  /* title baseline at y 85, the line under it at y 99 on the reference phone (inset 91) */
+  top: calc(var(--inset) - 14px);
+  pointer-events: none;
+}
+
+.ladder-head .title {
+  font-size: 8.5px;
+  line-height: 10px;
+  color: var(--c-ash);
+}
+
+.ladder-head .sub {
+  margin-top: 6px;
+  font-size: 6.5px;
+  line-height: 8px;
+  color: var(--c-etch3);
+}
+
+#app[data-layout='desktop'] .ladder-head {
+  left: 62px;
+}
+
+/* ------------------------------------------------------- column headings */
+
+.ladder-heads {
+  position: absolute;
+  /* heading baselines at y 127 and 138 on the reference phone */
+  top: calc(var(--inset) + 29.5px);
+  right: var(--edge);
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: end;
+  justify-items: end;
+  column-gap: 0;
+  row-gap: 3.5px;
+  font-size: 6.3px;
+  line-height: 7.5px;
+  color: var(--c-etch3);
+  pointer-events: none;
+}
+
+.ladder-heads .caps {
+  font-size: inherit;
+  color: var(--c-etch3);
+  font-style: normal;
+}
+
+.ladder-heads .h-pure,
+.ladder-heads .h-period {
+  grid-area: 1 / 1 / 2 / 3;
+}
+
+.ladder-heads .h-made {
+  grid-area: 2 / 1 / 3 / 3;
+}
+
+.ladder-heads .h-freq {
+  grid-area: 2 / 1;
+}
+
+.ladder-heads .h-length {
+  grid-area: 2 / 2;
+}
+
+.ladder-heads .h-length::before {
+  content: '·';
+  margin: 0 0.75em;
+}
+
+.ladder-heads .sign {
+  font-size: 1.5em;
+  line-height: 0;
+  margin-right: 0.6em;
+  vertical-align: -0.08em;
+}
+
+/* stack: in EARTH mode the Earth values stand where the pure ones stood */
+#app[data-mode='earth'] .ladder[data-columns='stack'] :is(.h-pure, .h-made, .r-pure, .r-made, .f-values) {
+  display: none;
+}
+
+.ladder[data-columns='side'] .ladder-heads {
+  left: 0;
+  right: 0;
+  display: block;
+  height: 8px;
+}
+
+.ladder[data-columns='side'] .ladder-heads > * {
+  position: absolute;
+  top: 0;
+}
+
+.ladder[data-columns='side'] .h-length::before {
+  content: none;
+}
+
+.ladder[data-columns='side'] :is(.h-pure, .r-pure, .f-values) {
+  right: var(--c1);
+}
+
+.ladder[data-columns='side'] :is(.h-made, .r-made, .f-madeof) {
+  right: var(--c2);
+}
+
+.ladder[data-columns='side'] :is(.h-period, .r-period, .f-period) {
+  right: var(--c3);
+}
+
+.ladder[data-columns='side'] :is(.h-freq, .r-freq, .f-freq) {
+  right: var(--c4);
+}
+
+.ladder[data-columns='side'] :is(.h-length, .r-length, .f-length) {
+  right: var(--c5);
+}
+
+/* ------------------------------------------------------------- the wheel */
+
+.ladder-wheel {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  cursor: grab;
+}
+
+.ladder-wheel:active {
+  cursor: grabbing;
+}
+
+.ladder-wheel:focus-visible {
+  outline-offset: -6px;
+}
+
+.rung,
+.rung-focus {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  will-change: transform;
+}
+
+.rung > *,
+.rung-focus > * {
+  position: absolute;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------- a row at rest */
+
+.rung {
+  height: 47px;
+}
+
+.rung .r-depth {
+  left: calc(var(--rx) - 17px);
+  top: 18.1px;
+  transform: translateX(-100%);
+  font-size: 9px;
+  font-weight: var(--w-earth);
+  color: var(--c-etch3);
+}
+
+.rung .r-name {
+  left: calc(var(--rx) + 22px);
+  top: 9.6px;
+  font-size: 19px;
+  font-weight: var(--w-value);
+}
+
+.rung .r-facts {
+  left: calc(var(--rx) + 22px);
+  top: 33px;
+  font-size: 6.3px;
+  letter-spacing: 0.2em;
+  color: var(--c-ash);
+}
+
+/* "kind · band · n in parent": the dots are furniture, the words are the text */
+.r-facts > * + *::before,
+.f-line > :not([hidden]) + :not([hidden])::before {
+  content: '·';
+  margin: 0 0.8em;
+}
+
+.rung .r-pure,
+.rung .r-period {
+  right: var(--edge);
+  top: 13.8px;
+  font-size: 12.5px;
+  font-weight: var(--w-value);
+}
+
+.rung .r-period {
+  color: var(--c-bone);
+  font-style: var(--earth-style);
+}
+
+.rung .r-made,
+.rung .r-earth2 {
+  right: var(--edge);
+  top: 30px;
+  font-size: 9px;
+  font-weight: var(--w-earth);
+  color: var(--c-ash);
+}
+
+.rung .r-made .u {
+  color: inherit;
+}
+
+.rung .r-earth2 {
+  display: flex;
+}
+
+.rung .r-length::before {
+  content: '·';
+  margin: 0 0.45em;
+}
+
+/* stack, EARTH: a row whose two figures are long keeps only "n in parent" of its caption (the rest is in its label) */
+.ladder[data-columns='stack'] .rung.wide :is(.r-kind, .r-band) {
+  display: none;
+}
+
+.ladder[data-columns='stack'] .rung.wide .r-parent::before {
+  content: none;
+}
+
+/* side: one line of values, each in its column */
+.ladder[data-columns='side'] .rung :is(.r-pure, .r-made, .r-period) {
+  top: 16.8px;
+  font-size: 12.5px;
+  font-weight: var(--w-value);
+}
+
+.ladder[data-columns='side'] .rung .r-earth2 {
+  display: contents;
+}
+
+.ladder[data-columns='side'] .rung :is(.r-freq, .r-length) {
+  position: absolute;
+  top: 16.8px;
+  font-size: 12.5px;
+  line-height: 1;
+}
+
+.ladder[data-columns='side'] .rung .r-length::before {
+  content: none;
+}
+
+.ladder[data-columns='side'] .rung .r-made {
+  color: var(--c-ash);
+}
+
+.ladder[data-columns='side'] .rung .r-period {
+  color: var(--c-earth);
+}
+
+/* ------------------------------------------------ the row under the index */
+
+.rung-focus {
+  height: 184px;
+  pointer-events: none;
+}
+
+/* the depth, inside the large seal (which the canvas draws 16 px off the rim) */
+.rung-focus .f-depth {
+  left: calc(var(--rx) + 16px);
+  top: 85.9px;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: var(--w-earth);
+}
+
+.rung-focus .f-head {
+  left: calc(var(--rx) + 62px);
+  top: 38.6px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.rung-focus .f-name {
+  font-size: 46px;
+  line-height: 1;
+  font-weight: var(--w-reading);
+}
+
+/* the two lines beside the name begin 74 px after it does, whatever the letter's width (the design's x + 136);
+   on a screen narrower than the smallest current phone they keep close to the name instead, to end before the spine */
+@media (min-width: 360px) {
+  .rung-focus .f-name {
+    min-width: 60px;
+  }
+}
+
+.rung-focus .f-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 7.3px;
+  margin-top: 10.4px;
+}
+
+.rung-focus .f-line {
+  line-height: 1;
+}
+
+.rung-focus .f-line1 {
+  font-size: 8px;
+  letter-spacing: 0.26em;
+  color: var(--c-ash);
+}
+
+.rung-focus .f-line2 {
+  font-size: 6.5px;
+  letter-spacing: 0.2em;
+  color: var(--c-ash);
+}
+
+/* the one red of the app: the band of the rung that is visible light */
+.rung-focus.visible-light .f-band {
+  color: var(--c-h-alpha);
+}
+
+.rung-focus .f-values {
+  left: calc(var(--rx) + 62px);
+  top: 93.8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.rung-focus .f-pure {
+  font-size: 19px;
+  line-height: 1;
+  font-weight: var(--w-reading);
+}
+
+.rung-focus .f-sub {
+  margin-top: 5.6px;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: var(--w-earth);
+  color: var(--c-ash);
+}
+
+.rung-focus .f-sub.caps {
+  margin-top: 7.5px;
+  font-size: 6.5px;
+  font-weight: var(--w-caps);
+}
+
+.rung-focus .f-madeof {
+  display: none;
+}
+
+.rung-focus .f-earth {
+  left: calc(var(--rx) + 62px);
+  top: 90.6px;
+  display: grid;
+  /* the lead spans both columns; the flexible second one takes its extra width */
+  grid-template-columns: max-content 1fr;
+  justify-items: start;
+  row-gap: 7.2px;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.rung-focus .f-earth .lead {
+  grid-area: 1 / 1 / 2 / 3;
+  font-size: 25px;
+  font-weight: var(--w-reading);
+  color: var(--c-bone);
+}
+
+.rung-focus .f-earth .lead .sign {
+  font-size: 0.92em;
+  margin-right: 0.28em;
+}
+
+.rung-focus .f-earth > :not(.lead) ~ :not(.lead)::before {
+  content: '·';
+  margin: 0 0.45em;
+}
+
+/* the band rule: a line from one edge of the band to the other, the rung's mark on it */
+.rung-focus .f-rule {
+  left: calc(var(--rx) + 62px);
+  right: var(--edge);
+  top: 147px;
+  height: 0;
+  border-top: 0.75px solid var(--c-etch3);
+}
+
+.rung-focus .f-rule::before,
+.rung-focus .f-rule::after {
+  content: '';
+  position: absolute;
+  top: -3.4px;
+  height: 6px;
+  border-left: 0.9px solid var(--c-etch3);
+}
+
+.rung-focus .f-rule::before {
+  left: 0;
+}
+
+.rung-focus .f-rule::after {
+  right: 0;
+}
+
+.rung-focus .f-mark {
+  position: absolute;
+  top: -6.4px;
+  height: 12px;
+  width: 0;
+  border-left: 1.4px solid var(--c-bone);
+  transform: translateX(-0.7px);
+}
+
+.rung-focus.visible-light .f-mark {
+  border-left-color: var(--c-h-alpha);
+  filter: drop-shadow(0 0 2px var(--c-h-alpha));
+}
+
+.rung-focus .f-end {
+  position: absolute;
+  top: 8px;
+  display: flex;
+  gap: 0.9em;
+  font-size: 5.8px;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  color: var(--c-etch3);
+}
+
+.rung-focus .f-end-low {
+  left: 0;
+}
+
+.rung-focus .f-end-high {
+  right: 0;
+}
+
+.rung-focus .f-edge {
+  font-family: inherit;
+  font-weight: inherit;
+  font-style: normal;
+  color: var(--c-etch3);
+}
+
+.rung-focus .f-end-low .f-edge::before,
+.rung-focus .f-end-high .f-edge::after {
+  content: '·';
+}
+
+.rung-focus .f-end-low .f-edge::before {
+  margin-right: 0.9em;
+}
+
+.rung-focus .f-end-high .f-edge::after {
+  margin-left: 0.9em;
+}
+
+/* side: the large row keeps its head at the left; its values stand in the columns, larger */
+.ladder[data-columns='side'] .rung-focus .f-values {
+  left: auto;
+  top: 78px;
+  align-items: flex-end;
+}
+
+.ladder[data-columns='side'] .rung-focus .f-madeof {
+  display: block;
+  top: 81.6px;
+  font-size: 15px;
+  font-weight: var(--w-value);
+  color: var(--c-ash);
+}
+
+.ladder[data-columns='side'] .rung-focus .f-madeof .u {
+  color: inherit;
+}
+
+.ladder[data-columns='side'] .rung-focus .f-earth {
+  display: contents;
+}
+
+.ladder[data-columns='side'] .rung-focus .f-earth > * {
+  position: absolute;
+  top: 81.6px;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.ladder[data-columns='side'] .rung-focus .f-earth > ::before {
+  content: none;
+}
+
+/* the lead is told by its colour here: the column's heading carries the Earth sign, and a larger
+   figure would run into the column beside it */
+.ladder[data-columns='side'] .rung-focus .f-earth .lead {
+  font-weight: var(--w-value);
+}
+
+.ladder[data-columns='side'] .rung-focus .f-earth .lead .sign {
+  display: none;
+}
+
+.ladder[data-columns='side'] .rung-focus .f-rule {
+  right: auto;
+  width: 280px;
+}
+
+/* ----------------------------------------- the instrument's focus, the spine */
+
+/* under the large seal: says whether the instrument is focused on this rung, and sets it */
+.ladder-focus {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 2px;
+  /* the design's floor for type is 6.2 px (DESIGN.md section 3) */
+  font-size: 6.4px;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  color: var(--c-etch3);
+}
+
+.ladder-focus .ring {
+  width: 6px;
+  height: 6px;
+  border: 0.9px solid currentColor;
+  border-radius: 50%;
+}
+
+.ladder-focus[aria-pressed='true'] {
+  color: var(--c-lumen);
+}
+
+.spine {
+  position: absolute;
+  top: calc(var(--inset) + 31px);
+  right: 0;
+  bottom: 4px;
+  width: 48px;
+  touch-action: none;
+  cursor: ns-resize;
+}
+
+.spine canvas {
+  pointer-events: none;
+}
+
+.spine:focus-visible {
+  outline-offset: -3px;
+}
+
+#app[data-layout='desktop'] .spine {
+  right: 34px;
+}
+
+/* the values end clear of the spine, which stands 34 px further in on a desktop */
+#app[data-layout='desktop'] .ladder {
+  --edge: 86px;
+}

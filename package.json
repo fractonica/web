@@ -1,0 +1,12 @@
+{
+  "name": "fractonica-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The Fractonica clock for the web: the C core as WebAssembly, its JavaScript binding, and the clock app. No dependencies: this file exists so that Node reads .js as ES modules.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test 'test/*.test.js'",
+    "serve": "node tools/serve.mjs"
+  }
+}
